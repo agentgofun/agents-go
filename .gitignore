@@ -1,0 +1,18 @@
+node_modules/
+.next/
+dist/
+build/
+*.tsbuildinfo
+.env
+.env.local
+.env.*.local
+.DS_Store
+*.log
+.turbo/
+coverage/
+
+# X session — never commit
+x-auth.json
+.tmp-snap.txt
+cookies-in.json
+cookies*.json

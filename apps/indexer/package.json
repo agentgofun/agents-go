@@ -1,0 +1,17 @@
+{
+  "name": "@agents-go/indexer",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch --env-file=../../.env src/index.ts",
+    "start": "tsx --env-file=../../.env src/index.ts",
+    "once": "tsx --env-file=../../.env src/index.ts --once"
+  },
+  "dependencies": {
+    "@agents-go/db": "workspace:*",
+    "@agents-go/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2"
+  }
+}

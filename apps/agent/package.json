@@ -1,0 +1,23 @@
+{
+  "name": "@agents-go/agent",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "run-one": "tsx --env-file=../../.env src/run-one.ts",
+    "worker": "tsx --env-file=../../.env src/worker.ts",
+    "x-login": "tsx scripts/x-login-capture.ts",
+    "x-verify": "tsx scripts/x-verify-auth.ts",
+    "convert-cookies": "tsx scripts/convert-cookies.ts",
+    "go-login": "tsx scripts/go-login-via-x.ts",
+    "go-submit": "tsx --env-file=../../.env scripts/go-submit.ts"
+  },
+  "dependencies": {
+    "@agents-go/db": "workspace:*",
+    "@agents-go/shared": "workspace:*",
+    "@anthropic-ai/sdk": "^0.65.0",
+    "playwright": "^1.49.1"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2"
+  }
+}

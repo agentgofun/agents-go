@@ -1,0 +1,119 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// A bounty mirrored from pump fun GO (livestream-api). Source of truth for text/criteria/reward.
+model Bounty {
+  taskId           String   @id
+  creatorAddress   String
+  title            String
+  bodyMarkdown     String
+  criteria         Json // BountyCriterion[]
+  rewardLegs       Json // BountyRewardLeg[]
+  attachments      Json? // BountyAttachment[]
+  rewardTotalUsd   Float?
+  rewardSol        Float    @default(0) // summed SOL legs, for quick sort
+  coinAddress      String?
+  status           String // OPEN | PENDING_RESOLUTION | CLOSED | IN_DISPUTE_PERIOD
+  submissionCount  Int      @default(0)
+  likeCount        Int      @default(0)
+  onChainBountyId  String?
+  rewardVaultAddrs String[] // Squads vault addresses across reward legs
+
+  creatorXFollowerCount Int?
+  creatorXVerified      Boolean?
+
+  expiresAt   DateTime?
+  publishedAt DateTime?
+  fundedAt    DateTime?
+  createdAt   DateTime // from GO
+
+  // our bookkeeping
+  firstSeenAt DateTime @default(now())
+  lastSeenAt  DateTime @updatedAt
+
+  claims AgentClaim[]
+
+  @@index([status])
+  @@index([rewardSol])
+  @@index([expiresAt])
+}
+
+/// An agent's decision to work a bounty. One claim per (bounty, agent).
+model AgentClaim {
+  id        String   @id @default(cuid())
+  taskId    String
+  bounty    Bounty   @relation(fields: [taskId], references: [taskId], onDelete: Cascade)
+
+  // FK-by-convention to Agent.token. The house dashboard bot uses agentToken = null
+  // (no external Agent identity), which keeps all existing rows valid after the migration.
+  agentToken String?
+
+  state     ClaimState @default(IN_PROGRESS)
+  agentName String     @default("agents.go-bot")
+
+  // the agent's produced answer / deliverable
+  answerText   String?
+  answerUrl    String? // link to submitted work (tweet, file, etc.)
+  notes        String? // agent reasoning / log summary
+
+  // operator publish flow: agent produces answer → operator copies it to GO by
+  // hand → pastes the resulting submission URL here via the admin panel.
+  submissionUrl    String? // pump.fun GO submission link the operator pasted
+  submissionImages String[] // image URLs parsed from the GO submission (attachments)
+  publishedAt      DateTime?
+
+  claimedAt    DateTime  @default(now())
+  submittedAt  DateTime?
+  resolvedAt   DateTime?
+
+  payout Payout?
+
+  @@unique([taskId, agentToken])
+  @@index([taskId])
+  @@index([state])
+}
+
+/// An external agent that holds an MCP token and works bounties under its own name.
+/// The token is the secret the MCP server stores locally and sends as a bearer.
+model Agent {
+  id         String   @id @default(cuid())
+  token      String   @unique // secret, format ag_live_…
+  name       String
+  createdAt  DateTime @default(now())
+  lastSeenAt DateTime @updatedAt
+}
+
+enum ClaimState {
+  IN_PROGRESS // agent took it, working
+  AWAITING_PUBLISH // agent produced an answer; waiting for operator to post it on GO
+  PUBLISHED // operator posted it on GO and pasted the submission URL
+  SUBMITTED // (legacy) work submitted to GO, awaiting pump.fun review
+  WON // RecordDecision accepted, paid
+  LOST // rejected / expired
+}
+
+/// An on-chain payout matched to a claim (from RecordDecision events / SOL inflow to agent wallet).
+model Payout {
+  id         String   @id @default(cuid())
+  claimId    String   @unique
+  claim      AgentClaim @relation(fields: [claimId], references: [id], onDelete: Cascade)
+
+  signature  String   @unique
+  slot       BigInt
+  amountSol  Float
+  mintAddress String  @default("So11111111111111111111111111111111111111112")
+  recipient  String // agent wallet that received
+
+  // treasury split bookkeeping (phase 3)
+  buybackSol     Float? // 50%
+  distributedSol Float? // 50%
+
+  occurredAt DateTime
+  recordedAt DateTime @default(now())
+}

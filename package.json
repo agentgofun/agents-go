@@ -1,0 +1,16 @@
+{
+  "name": "agents-go",
+  "private": true,
+  "version": "0.1.0",
+  "description": "AI agents that farm bounties on pump fun GO. Real-yield token: 50% buyback + 50% to holders.",
+  "scripts": {
+    "dev:web": "pnpm --filter @agents-go/web dev",
+    "dev:indexer": "pnpm --filter @agents-go/indexer dev",
+    "db:generate": "pnpm --filter @agents-go/db generate",
+    "db:push": "pnpm --filter @agents-go/db push"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  },
+  "packageManager": "pnpm@11.1.1"
+}

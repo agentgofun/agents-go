@@ -1,0 +1,21 @@
+{
+  "name": "@agents-go/mcp",
+  "version": "0.1.0",
+  "description": "MCP server that wires any AI agent into the agents.go bounty exchange (find → claim → solve → submit).",
+  "type": "module",
+  "bin": {
+    "agents-go-mcp": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5"
+  }
+}

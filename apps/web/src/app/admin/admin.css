@@ -1,0 +1,289 @@
+/* Admin panel — dark operator console, distinct from the light public site. */
+.admin-shell {
+  min-height: 100vh;
+  background: #0a0c0a;
+  color: #e8f0e4;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 14px;
+}
+
+/* login */
+.admin-login {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+}
+.admin-login-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 300px;
+  padding: 28px;
+  background: #11150f;
+  border: 1px solid #1f2a1a;
+  border-radius: 12px;
+}
+.admin-login-brand {
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 6px;
+}
+.admin-login-brand span {
+  color: #6ee06e;
+}
+.admin-login-card input,
+.qcard-publish input {
+  background: #0a0c0a;
+  border: 1px solid #2d3d26;
+  color: #e8f0e4;
+  padding: 10px 12px;
+  border-radius: 7px;
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+}
+.admin-login-card input:focus,
+.qcard-publish input:focus {
+  border-color: #6ee06e;
+}
+.admin-login-card button {
+  background: #6ee06e;
+  color: #0a0c0a;
+  border: none;
+  padding: 10px;
+  border-radius: 7px;
+  font-family: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.admin-login-err {
+  color: #c4564e;
+  font-size: 12px;
+}
+
+/* bar */
+.admin-bar {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 0 22px;
+  height: 52px;
+  border-bottom: 1px solid #1f2a1a;
+  background: #11150f;
+}
+.admin-bar-brand {
+  font-weight: 700;
+}
+.admin-bar-brand span {
+  color: #6ee06e;
+}
+.admin-nav {
+  display: flex;
+  gap: 16px;
+  margin-left: auto;
+}
+.admin-nav a {
+  color: #8a9683;
+  text-decoration: none;
+}
+.admin-nav a:hover {
+  color: #6ee06e;
+}
+.admin-logout {
+  background: transparent;
+  border: 1px solid #2d3d26;
+  color: #8a9683;
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+}
+.admin-logout:hover {
+  color: #c4564e;
+  border-color: #c4564e;
+}
+
+.admin-main {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 28px 22px 80px;
+}
+.admin-page-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.admin-page-head h1 {
+  font-size: 20px;
+  font-weight: 700;
+}
+.admin-stat-row {
+  display: flex;
+  gap: 14px;
+  font-size: 12px;
+  color: #8a9683;
+}
+.admin-stat-row .hot {
+  color: #6ee06e;
+}
+.admin-hint {
+  color: #8a9683;
+  font-size: 12px;
+  margin-bottom: 20px;
+  max-width: 720px;
+}
+.admin-hint b {
+  color: #e8f0e4;
+}
+.admin-empty {
+  color: #5a6453;
+  padding: 40px 0;
+  text-align: center;
+}
+.admin-empty code {
+  color: #6ee06e;
+}
+
+/* queue cards */
+.qlist {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.qcard {
+  background: #11150f;
+  border: 1px solid #1f2a1a;
+  border-radius: 10px;
+  padding: 16px;
+}
+.qcard-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.qcard-title {
+  font-weight: 600;
+  font-size: 15px;
+}
+.qcard-reward {
+  color: #6ee06e;
+  font-weight: 700;
+}
+.qcard-summary {
+  color: #8a9683;
+  font-size: 12px;
+  margin-top: 4px;
+}
+.qcard-answer {
+  margin-top: 12px;
+  border: 1px solid #1f2a1a;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.qcard-answer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 12px;
+  background: #0a0c0a;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #5a6453;
+}
+.qcard-answer-actions {
+  display: flex;
+  gap: 12px;
+}
+.qcard-answer-actions button,
+.qcard-answer-actions a {
+  background: none;
+  border: none;
+  color: #6ee06e;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 11px;
+  text-decoration: none;
+}
+.qcard-answer-body {
+  margin: 0;
+  padding: 12px;
+  max-height: 260px;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #c2cfba;
+}
+.qcard-publish {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+.qcard-publish input {
+  flex: 1;
+}
+.qcard-go {
+  background: #6ee06e;
+  color: #0a0c0a;
+  border: none;
+  padding: 0 16px;
+  border-radius: 7px;
+  font-family: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.qcard-drop {
+  background: transparent;
+  border: 1px solid #2d3d26;
+  color: #8a9683;
+  border-radius: 7px;
+  width: 38px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.qcard-drop:hover {
+  color: #c4564e;
+  border-color: #c4564e;
+}
+
+/* published table */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.admin-table th {
+  text-align: left;
+  color: #5a6453;
+  font-weight: 500;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding: 8px 10px;
+  border-bottom: 1px solid #1f2a1a;
+}
+.admin-table td {
+  padding: 10px;
+  border-bottom: 1px solid #161d12;
+}
+.admin-table a {
+  color: #6ee06e;
+}
+.admin-mini {
+  background: transparent;
+  border: 1px solid #2d3d26;
+  color: #8a9683;
+  padding: 3px 9px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 11px;
+}
+.admin-mini:hover {
+  color: #e8f0e4;
+}
