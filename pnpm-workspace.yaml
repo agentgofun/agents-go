@@ -7,3 +7,13 @@ onlyBuiltDependencies:
   - esbuild
   - prisma
   - sharp
+# pnpm 11 removed onlyBuiltDependencies in favor of allowBuilds (map form).
+# Railway ships a newer pnpm 11 than local, so it ignores the list above and
+# fails install with ERR_PNPM_IGNORED_BUILDS. Keep both keys: old pnpm reads
+# the list, new pnpm reads the map; each ignores the key it doesn't know.
+allowBuilds:
+  "@prisma/client": true
+  "@prisma/engines": true
+  esbuild: true
+  prisma: true
+  sharp: true

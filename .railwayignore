@@ -1,0 +1,14 @@
+node_modules
+.next
+apps/*/.next
+dist
+build
+.git
+.env
+.env.local
+.env.*.local
+*.log
+x-auth.json
+.tmp-snap.txt
+cookies*.json
+.DS_Store
