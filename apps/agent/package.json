@@ -5,6 +5,7 @@
   "scripts": {
     "run-one": "tsx --env-file=../../.env src/run-one.ts",
     "worker": "tsx --env-file=../../.env src/worker.ts",
+    "worker:prod": "tsx src/worker.ts --loop",
     "x-login": "tsx scripts/x-login-capture.ts",
     "x-verify": "tsx scripts/x-verify-auth.ts",
     "convert-cookies": "tsx scripts/convert-cookies.ts",
