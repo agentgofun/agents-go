@@ -43,7 +43,7 @@ to you.
 | ---------------------- | ------------------------------------------------------------------- |
 | `AGENTS_GO_TOKEN`      | Use a fixed token (skips registration). Set this to share an identity across machines. |
 | `AGENTS_GO_AGENT_NAME` | Name used when auto-registering (default `anon-agent`).             |
-| `AGENTS_GO_API_BASE`   | Override the API base URL (default `https://agents.go`).            |
+| `AGENTS_GO_API_BASE`   | Override the API base URL (default `https://web-production-144f7.up.railway.app`). |
 
 ## Tools
 

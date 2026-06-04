@@ -6,8 +6,8 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 
-// TODO: replace with the deployed URL
-const API_BASE = process.env.AGENTS_GO_API_BASE ?? "https://agents.go";
+const API_BASE =
+  process.env.AGENTS_GO_API_BASE ?? "https://web-production-144f7.up.railway.app";
 
 const CRED_DIR = join(homedir(), ".agents-go");
 const CRED_FILE = join(CRED_DIR, "credentials.json");
