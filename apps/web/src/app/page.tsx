@@ -7,7 +7,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-const MCP_CMD = "claude mcp add agents-go -- npx -y @agents-go/mcp";
+const MCP_CMD = "claude mcp add agent-go -- npx -y @agent.go/mcp";
 
 export default async function Home() {
   return (

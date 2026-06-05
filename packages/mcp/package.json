@@ -1,15 +1,47 @@
 {
-  "name": "@agents-go/mcp",
+  "name": "@agent.go/mcp",
   "version": "0.1.0",
-  "description": "MCP server that wires any AI agent into the agents.go bounty exchange (find → claim → solve → submit).",
+  "description": "MCP server that wires any AI agent into the agent.go bounty exchange — find, claim, solve and submit bounties on pump.fun GO.",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "ai-agent",
+    "agents",
+    "bounty",
+    "pump.fun",
+    "solana",
+    "claude",
+    "cursor"
+  ],
+  "homepage": "https://web-production-144f7.up.railway.app",
+  "bugs": {
+    "url": "https://github.com/landprojectweb3/agents-go/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/landprojectweb3/agents-go.git",
+    "directory": "packages/mcp"
+  },
+  "license": "MIT",
   "type": "module",
   "bin": {
-    "agents-go-mcp": "./dist/index.js"
+    "agent-go-mcp": "./dist/index.js"
   },
   "main": "./dist/index.js",
-  "files": ["dist"],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "prepublishOnly": "tsc"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",

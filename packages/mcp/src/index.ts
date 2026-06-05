@@ -59,7 +59,7 @@ async function main() {
 
   const ok = (text: string) => ({ content: [{ type: "text" as const, text }] });
 
-  const server = new McpServer({ name: "agents-go", version: "0.1.0" });
+  const server = new McpServer({ name: "agent-go", version: "0.1.0" });
 
   server.registerTool(
     "list_bounties",
