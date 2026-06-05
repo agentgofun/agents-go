@@ -17,24 +17,27 @@ const LOOP_MS = Number(process.env.AGENT_LOOP_MS ?? 240_000);
 const ACTIVE = ["OPEN", "PENDING_RESOLUTION", "IN_DISPUTE_PERIOD"]; // GO live phases (now OPEN)
 const LOOP = process.argv.includes("--loop");
 
-async function pickUnworked(limit: number) {
-  // open bounties with no house claim yet (agentToken: null), richest first
+// Pick bounties this specific agent hasn't claimed yet, richest first.
+async function pickUnworked(agentToken: string | null, limit: number) {
   return prisma.bounty.findMany({
     where: {
       status: { in: ACTIVE },
-      claims: { none: { agentToken: null } },
+      claims: { none: { agentToken } },
     },
     orderBy: [{ rewardTotalUsd: "desc" }, { rewardSol: "desc" }],
     take: limit,
   });
 }
 
-async function workOne(b: { taskId: string; title: string; bodyMarkdown: string; criteria: unknown; rewardTotalUsd: number | null }) {
-  console.log(`\n🤖 working: "${b.title}" ($${Math.round(b.rewardTotalUsd ?? 0)})`);
+async function workOne(
+  agent: { token: string | null; name: string },
+  b: { taskId: string; title: string; bodyMarkdown: string; criteria: unknown; rewardTotalUsd: number | null },
+) {
+  console.log(`\n🤖 [${agent.name}] working: "${b.title}" ($${Math.round(b.rewardTotalUsd ?? 0)})`);
 
-  // claim it first so a parallel run won't grab the same one
+  // claim it first so a parallel run won't grab the same one for this agent
   await prisma.agentClaim.create({
-    data: { taskId: b.taskId, agentToken: null, state: "IN_PROGRESS" },
+    data: { taskId: b.taskId, agentToken: agent.token, agentName: agent.name, state: "IN_PROGRESS" },
   });
 
   try {
@@ -45,7 +48,7 @@ async function workOne(b: { taskId: string; title: string; bodyMarkdown: string;
       rewardUsd: b.rewardTotalUsd,
     });
     await prisma.agentClaim.updateMany({
-      where: { taskId: b.taskId, agentToken: null },
+      where: { taskId: b.taskId, agentToken: agent.token },
       data: {
         answerText: result.answer,
         notes: result.summary,
@@ -60,20 +63,39 @@ async function workOne(b: { taskId: string; title: string; bodyMarkdown: string;
   }
 }
 
+// One agent's turn: claim + solve up to BATCH fresh bounties under its identity.
+async function tickAgent(agent: { token: string | null; name: string }) {
+  const todo = await pickUnworked(agent.token, BATCH);
+  if (todo.length === 0) return 0;
+  for (const b of todo) await workOne(agent, b);
+  return todo.length;
+}
+
 async function tick() {
-  const todo = await pickUnworked(BATCH);
-  if (todo.length === 0) {
-    console.log("[worker] no unworked open bounties right now.");
-    return;
+  // The house bot (agentToken null) plus every MCP-registered agent farm under
+  // their own name. The server does the work for all of them.
+  const mcpAgents = await prisma.agent.findMany({ select: { token: true, name: true } });
+  const roster: { token: string | null; name: string }[] = [
+    { token: null, name: "agent.GO-bot" },
+    ...mcpAgents,
+  ];
+
+  let picked = 0;
+  for (const agent of roster) {
+    try {
+      picked += await tickAgent(agent);
+    } catch (e) {
+      console.error(`[worker] agent ${agent.name} failed:`, (e as Error).message);
+    }
   }
-  console.log(`[worker] picked ${todo.length} bounties`);
-  for (const b of todo) await workOne(b);
   const waiting = await prisma.agentClaim.count({ where: { state: "AWAITING_PUBLISH" } });
-  console.log(`[worker] done. ${waiting} answers awaiting publish.`);
+  console.log(
+    `[worker] cycle done. ${roster.length} agents, ${picked} bounties picked, ${waiting} awaiting publish.`,
+  );
 }
 
 async function main() {
-  console.log(`[worker] start. batch=${BATCH} loop=${LOOP}`);
+  console.log(`[worker] start. batch=${BATCH}/agent loop=${LOOP} every ${LOOP_MS}ms`);
   await tick();
   if (!LOOP) {
     await prisma.$disconnect();

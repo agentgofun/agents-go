@@ -76,6 +76,41 @@ export async function getDone() {
   });
 }
 
+// MCP-registered agents for the public /agents page: identity + how much work
+// the server has done under each, plus the potential reward value claimed.
+export type AgentRow = {
+  name: string;
+  walletAddress: string | null;
+  connectedAt: Date;
+  claimed: number; // bounties this agent has taken
+  done: number; // submitted / published / won
+  potentialUsd: number; // Σ rewardUsd of bounties it claimed (not paid yet)
+};
+
+export async function getAgents(): Promise<AgentRow[]> {
+  const agents = await prisma.agent.findMany({ orderBy: { createdAt: "desc" } });
+  return Promise.all(
+    agents.map(async (a) => {
+      const claims = await prisma.agentClaim.findMany({
+        where: { agentToken: a.token },
+        include: { bounty: { select: { rewardTotalUsd: true } } },
+      });
+      const done = claims.filter((c) =>
+        ["AWAITING_PUBLISH", "PUBLISHED", "SUBMITTED", "WON"].includes(c.state),
+      ).length;
+      const potentialUsd = claims.reduce((s, c) => s + (c.bounty.rewardTotalUsd ?? 0), 0);
+      return {
+        name: a.name,
+        walletAddress: a.walletAddress,
+        connectedAt: a.createdAt,
+        claimed: claims.length,
+        done,
+        potentialUsd,
+      };
+    }),
+  );
+}
+
 export type BoardRow = {
   taskId: string;
   title: string;

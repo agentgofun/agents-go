@@ -135,51 +135,68 @@ export interface GoSubmission {
   publishedAt?: string;
 }
 
-/** Parse taskId + submissionId out of a pump.fun GO submission URL. */
+/**
+ * Parse taskId (+ optional submissionId) out of a pump.fun GO link. Accepts both
+ *   …/go/<taskId>/submissions/<submissionId>   (a specific submission)
+ *   …/go/<taskId>                              (just the bounty)
+ * so an operator can paste either form. submissionId is null for the short form.
+ */
 export function parseSubmissionUrl(
   url: string,
-): { taskId: string; submissionId: string } | null {
-  // …/go/<taskId>/submissions/<submissionId>[#…|?…]
-  const m = url.match(
-    /\/go\/([0-9a-f-]{36})\/submissions\/([0-9a-f-]{36})/i,
+): { taskId: string; submissionId: string | null } | null {
+  const withSub = url.match(/\/go\/([0-9a-f-]{36})\/submissions\/([0-9a-f-]{36})/i);
+  if (withSub) return { taskId: withSub[1]!, submissionId: withSub[2]! };
+  const taskOnly = url.match(/\/go\/([0-9a-f-]{36})/i);
+  if (taskOnly) return { taskId: taskOnly[1]!, submissionId: null };
+  return null;
+}
+
+function isMedia(a: { kind?: string; contentType?: string; url?: string }): boolean {
+  const ct = a.contentType ?? "";
+  return (
+    (a.kind === "image" ||
+      a.kind === "video" ||
+      ct.startsWith("image/") ||
+      ct.startsWith("video/")) &&
+    !!a.url
   );
-  if (!m) return null;
-  return { taskId: m[1]!, submissionId: m[2]! };
 }
 
 /**
- * Given a GO submission URL, fetch that submission's media attachment URLs
- * (images AND videos). Returns [] if the link isn't a submission URL or the
- * submission/attachments aren't found.
+ * Given a GO link, fetch the submission's media URLs (images AND videos) plus its
+ * text. If the link names a specific submission, that one is used; otherwise the
+ * most recent submission on the bounty is used. Returns empty/null if not found.
  */
-export async function fetchSubmissionImages(
+export async function fetchSubmission(
   url: string,
   opts: GoClientOptions = {},
-): Promise<string[]> {
+): Promise<{ media: string[]; text: string | null }> {
   const ids = parseSubmissionUrl(url);
-  if (!ids) return [];
+  if (!ids) return { media: [], text: null };
   const base = opts.base ?? DEFAULT_BASE;
   const f = opts.fetchImpl ?? fetch;
   const res = await f(`${base}/v2/tasks/${ids.taskId}/submissions`, {
     headers: { accept: "application/json" },
   });
-  if (!res.ok) return [];
+  if (!res.ok) return { media: [], text: null };
   const data = (await res.json()) as { items?: GoSubmission[] } | GoSubmission[];
   const items = Array.isArray(data) ? data : data.items ?? [];
-  const sub = items.find((s) => s.submissionId === ids.submissionId);
-  if (!sub?.attachments) return [];
-  return sub.attachments
-    .filter((a) => {
-      const ct = a.contentType ?? "";
-      return (
-        (a.kind === "image" ||
-          a.kind === "video" ||
-          ct.startsWith("image/") ||
-          ct.startsWith("video/")) &&
-        a.url
-      );
-    })
-    .map((a) => a.url!) as string[];
+  // exact submission if the URL named one, else the newest submission
+  const sub = ids.submissionId
+    ? items.find((s) => s.submissionId === ids.submissionId)
+    : items[0];
+  if (!sub) return { media: [], text: null };
+  const media = (sub.attachments ?? []).filter(isMedia).map((a) => a.url!) as string[];
+  const text = typeof sub.bodyMarkdown === "string" ? sub.bodyMarkdown : null;
+  return { media, text };
+}
+
+/** Back-compat: just the media URLs (images + videos) of a submission. */
+export async function fetchSubmissionImages(
+  url: string,
+  opts: GoClientOptions = {},
+): Promise<string[]> {
+  return (await fetchSubmission(url, opts)).media;
 }
 
 /** Convenience: sum reward legs into a human SOL amount (SOL legs only). */

@@ -82,11 +82,12 @@ model AgentClaim {
 /// An external agent that holds an MCP token and works bounties under its own name.
 /// The token is the secret the MCP server stores locally and sends as a bearer.
 model Agent {
-  id         String   @id @default(cuid())
-  token      String   @unique // secret, format ag_live_…
-  name       String
-  createdAt  DateTime @default(now())
-  lastSeenAt DateTime @updatedAt
+  id            String   @id @default(cuid())
+  token         String   @unique // secret, format ag_live_…
+  name          String
+  walletAddress String? // Solana address the operator pays earnings to
+  createdAt     DateTime @default(now())
+  lastSeenAt    DateTime @updatedAt
 }
 
 enum ClaimState {

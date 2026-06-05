@@ -25,10 +25,11 @@ async function resolveToken(): Promise<string> {
   }
 
   const name = process.env.AGENTS_GO_AGENT_NAME ?? "anon-agent";
+  const walletAddress = process.env.AGENTS_GO_WALLET ?? undefined;
   const res = await fetch(`${API_BASE}/api/agent/register`, {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ name }),
+    body: JSON.stringify({ name, walletAddress }),
   });
   if (!res.ok) throw new Error(`register failed: ${res.status} ${await res.text()}`);
   const { token } = (await res.json()) as { token: string };

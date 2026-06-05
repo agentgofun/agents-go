@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@agents-go/db";
-import { fetchSubmissionImages } from "@agents-go/shared";
+import { fetchSubmission } from "@agents-go/shared";
 import { requireAdmin } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
@@ -31,24 +31,30 @@ export async function PATCH(
     return NextResponse.json({ error: "valid submissionUrl required" }, { status: 400 });
   }
 
-  // Pull the real photo(s) from the GO submission so the public card shows proof.
-  let images: string[] = [];
+  // Pull the real photo(s)/video(s) + text from the GO submission so the public
+  // card shows proof. Keep the agent's own answer if the submission has no text.
+  let media: string[] = [];
+  let text: string | null = null;
   try {
-    images = await fetchSubmissionImages(url);
+    const sub = await fetchSubmission(url);
+    media = sub.media;
+    text = sub.text;
   } catch {
-    images = []; // non-fatal: still publish even if image fetch fails
+    // non-fatal: still publish even if the fetch fails
   }
 
+  const claim = await prisma.agentClaim.findUnique({ where: { id } });
   await prisma.agentClaim.update({
     where: { id },
     data: {
       submissionUrl: url,
-      submissionImages: images,
+      submissionImages: media,
+      answerText: text ?? claim?.answerText ?? null,
       state: "PUBLISHED",
       publishedAt: new Date(),
     },
   });
-  return NextResponse.json({ ok: true, images: images.length });
+  return NextResponse.json({ ok: true, media: media.length, text: !!text });
 }
 
 // DELETE /api/admin/claims/[id] -> drop the claim entirely (agent re-picks later)

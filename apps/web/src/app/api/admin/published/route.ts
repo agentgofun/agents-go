@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@agents-go/db";
-import { fetchSubmissionImages } from "@agents-go/shared";
+import { fetchSubmission } from "@agents-go/shared";
 import { requireAdmin } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
@@ -31,12 +31,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "bounty not found for that taskId" }, { status: 404 });
   }
 
-  // Pull photos/videos from the GO submission so the public card shows proof.
-  let images: string[] = [];
+  // Pull photos/videos AND the submission text from GO so the public card shows
+  // full proof (the operator only pastes a link).
+  let media: string[] = [];
+  let text: string | null = null;
   try {
-    images = await fetchSubmissionImages(url);
+    const sub = await fetchSubmission(url);
+    media = sub.media;
+    text = sub.text;
   } catch {
-    images = []; // non-fatal: still publish even if media fetch fails
+    // non-fatal: still publish even if the fetch fails
   }
 
   // Upsert the house claim (agentToken null) for this bounty straight to PUBLISHED.
@@ -49,7 +53,8 @@ export async function POST(req: NextRequest) {
       where: { id: existing.id },
       data: {
         submissionUrl: url,
-        submissionImages: images,
+        submissionImages: media,
+        answerText: text ?? existing.answerText,
         state: "PUBLISHED",
         publishedAt: new Date(),
       },
@@ -61,12 +66,13 @@ export async function POST(req: NextRequest) {
         agentToken: null,
         state: "PUBLISHED",
         submissionUrl: url,
-        submissionImages: images,
+        submissionImages: media,
+        answerText: text,
         submittedAt: new Date(),
         publishedAt: new Date(),
       },
     });
   }
 
-  return NextResponse.json({ ok: true, media: images.length });
+  return NextResponse.json({ ok: true, media: media.length, text: !!text });
 }
