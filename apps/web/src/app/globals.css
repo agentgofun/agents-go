@@ -140,9 +140,8 @@ textarea {
   justify-content: space-between;
 }
 .nav-brand {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 11px;
   font-family: var(--exp);
   font-weight: 800;
   font-size: 19px;
@@ -188,7 +187,10 @@ textarea {
   font-weight: 600;
   background: var(--blue);
   color: var(--white) !important;
-  padding: 9px 16px !important;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 16px !important;
   letter-spacing: 0.3px;
   transition: background 0.15s, transform 0.1s !important;
 }
@@ -198,25 +200,39 @@ textarea {
   box-shadow: 3px 3px 0 var(--edge);
 }
 
-/* npm / github icon buttons in the nav */
-.icon-btn {
-  display: inline-grid;
-  place-items: center;
-  width: 34px;
-  height: 32px;
-  color: var(--ink-2);
-  border: 1px solid var(--line-2);
-  background: var(--surface);
-  transition: color 0.15s, border-color 0.15s, box-shadow 0.13s, transform 0.1s;
+/* big brand buttons next to the Connect-agent CTA (github + npm) */
+.gh-btn,
+.npm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  transition: background 0.15s, transform 0.1s, box-shadow 0.13s;
 }
-.icon-btn:hover {
-  color: var(--ink);
-  border-color: var(--edge);
-  box-shadow: 3px 3px 0 var(--blue-wash-2);
-  transform: translate(-1px, -1px);
-}
-.icon-btn svg {
+.gh-btn svg,
+.npm-btn svg {
   display: block;
+}
+.gh-btn:hover,
+.npm-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--edge);
+}
+.npm-btn {
+  background: #cb3837;
+  border-color: #cb3837;
+}
+.npm-btn:hover {
+  background: #b22b2a;
+}
+.gh-btn {
+  background: #24292f;
+  border-color: #3a4048;
+}
+.gh-btn:hover {
+  background: #2f363d;
 }
 
 /* agent treasury wallet — mono pill, sol-green balance */
@@ -230,7 +246,8 @@ textarea {
   color: var(--ink-2) !important;
   background: var(--surface);
   border: 1px solid var(--line-2);
-  padding: 6px 11px !important;
+  height: 36px;
+  padding: 0 12px !important;
   letter-spacing: 0.3px;
   transition: border-color 0.15s, box-shadow 0.13s, transform 0.1s;
 }
