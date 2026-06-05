@@ -6,7 +6,7 @@ import LogoutButton from "./_components/LogoutButton";
 import "./admin.css";
 
 export const metadata: Metadata = {
-  title: "agents.go · operator",
+  title: "agent.GO · operator",
   robots: { index: false, follow: false },
 };
 
@@ -19,7 +19,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       {authed && (
         <header className="admin-bar">
           <div className="admin-bar-brand">
-            agents<span>.go</span> / operator
+            agent<span>.GO</span> / operator
           </div>
           <nav className="admin-nav">
             <Link href="/admin/queue">queue</Link>

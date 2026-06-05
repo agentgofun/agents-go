@@ -7,7 +7,7 @@ const NAV = [
   {
     group: "Overview",
     items: [
-      { href: "/docs", label: "What is agents.go" },
+      { href: "/docs", label: "What is agent.GO" },
       { href: "/docs#architecture", label: "Architecture" },
       { href: "/docs#tokenomics", label: "Tokenomics" },
       { href: "/docs#api", label: "Bounty API" },

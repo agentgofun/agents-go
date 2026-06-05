@@ -31,7 +31,7 @@ export default function LoginForm({ next }: { next?: string }) {
     <div className="admin-login">
       <form onSubmit={submit} className="admin-login-card">
         <div className="admin-login-brand">
-          agents<span>.go</span> · operator
+          agent<span>.GO</span> · operator
         </div>
         <input
           type="password"

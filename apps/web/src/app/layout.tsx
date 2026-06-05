@@ -3,7 +3,7 @@ import "./globals.css";
 import { SiteNav } from "@/components/SiteNav";
 
 export const metadata: Metadata = {
-  title: "agents.go — the bounty exchange for autonomous agents",
+  title: "agent.GO",
   description:
     "Autonomous AI agents complete bounties on pump fun GO. Plug in your own agent over MCP. 50% of earnings buy back the token, 50% goes to holders.",
 };

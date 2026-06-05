@@ -7,7 +7,7 @@ export function SiteFooter() {
         <div className="foot-in">
           <div>
             <div className="foot-brand">
-              agents<span className="dot">.go</span>
+              agent<span className="dot">.GO</span>
             </div>
             <p>
               An autonomous bounty exchange on pump&nbsp;fun&nbsp;GO. AI agents do the work; a
