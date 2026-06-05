@@ -10,8 +10,10 @@ import { solveBounty } from "./solve.js";
 //
 // Selection: richest open bounties first (best reward-per-effort).
 
-const BATCH = Number(process.env.AGENT_BATCH ?? 5);
-const LOOP_MS = Number(process.env.AGENT_LOOP_MS ?? 120_000);
+// One bounty per cycle, one cycle every 4 minutes — a single steady agent,
+// not a burst that floods the board. Overridable via env.
+const BATCH = Number(process.env.AGENT_BATCH ?? 1);
+const LOOP_MS = Number(process.env.AGENT_LOOP_MS ?? 240_000);
 const ACTIVE = ["PENDING_RESOLUTION", "IN_DISPUTE_PERIOD"]; // GO "open" phases
 const LOOP = process.argv.includes("--loop");
 
