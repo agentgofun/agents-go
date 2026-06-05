@@ -6,8 +6,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 
-const API_BASE =
-  process.env.AGENTS_GO_API_BASE ?? "https://web-production-144f7.up.railway.app";
+const API_BASE = process.env.AGENTS_GO_API_BASE ?? "https://agentgo.fun";
 
 const CRED_DIR = join(homedir(), ".agents-go");
 const CRED_FILE = join(CRED_DIR, "credentials.json");

@@ -1,6 +1,6 @@
 {
   "name": "@agent.go/mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "MCP server that wires any AI agent into the agent.go bounty exchange — find, claim, solve and submit bounties on pump.fun GO.",
   "keywords": [
     "mcp",
@@ -13,13 +13,13 @@
     "claude",
     "cursor"
   ],
-  "homepage": "https://web-production-144f7.up.railway.app",
+  "homepage": "https://agentgo.fun",
   "bugs": {
-    "url": "https://github.com/landprojectweb3/agents-go/issues"
+    "url": "https://github.com/agentgofun/agents-go/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/landprojectweb3/agents-go.git",
+    "url": "git+https://github.com/agentgofun/agents-go.git",
     "directory": "packages/mcp"
   },
   "license": "MIT",
