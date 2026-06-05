@@ -40,23 +40,75 @@ export class GoClient {
     return (await res.json()) as T;
   }
 
-  /** List bounties for a phase, sorted by reward desc by default. */
+  /** One page of bounties for a phase. Returns items + the cursor for the next page. */
+  async tasksPage(opts: {
+    phase?: BountyPhase | BountyPhase[];
+    sort?: string;
+    order?: "asc" | "desc";
+    limit?: number;
+    cursor?: string;
+  } = {}): Promise<{ items: GoBounty[]; nextCursor: string | null }> {
+    const params: Record<string, string | number> = {
+      sort: opts.sort ?? "rewardTotalUsd",
+      order: opts.order ?? "desc",
+      limit: opts.limit ?? 100,
+    };
+    if (opts.phase) {
+      params.phase = Array.isArray(opts.phase) ? opts.phase.join(",") : opts.phase;
+    }
+    if (opts.cursor) params.cursor = opts.cursor;
+    const data = await this.get<GoTasksResponse>("/v2/tasks", params);
+    return { items: data.items ?? [], nextCursor: data.nextCursor ?? null };
+  }
+
+  /** List bounties for a phase, sorted by reward desc by default (single page). */
   async tasks(opts: {
     phase?: BountyPhase | BountyPhase[];
     sort?: string;
     order?: "asc" | "desc";
     limit?: number;
   } = {}): Promise<GoBounty[]> {
-    const params: Record<string, string | number> = {
-      sort: opts.sort ?? "rewardTotalUsd",
-      order: opts.order ?? "desc",
-      limit: opts.limit ?? 50,
-    };
-    if (opts.phase) {
-      params.phase = Array.isArray(opts.phase) ? opts.phase.join(",") : opts.phase;
+    const { items } = await this.tasksPage(opts);
+    return items;
+  }
+
+  /**
+   * Walk the cursor pagination to fetch EVERY bounty in a phase (GO caps a page
+   * at 100). Stops at maxPages as a safety bound. The GO list is cursor-based;
+   * offset is ignored, so this is the only way to get all ~300 live bounties.
+   */
+  async allTasks(opts: {
+    phase?: BountyPhase | BountyPhase[];
+    sort?: string;
+    order?: "asc" | "desc";
+    pageSize?: number;
+    maxPages?: number;
+  } = {}): Promise<GoBounty[]> {
+    const pageSize = opts.pageSize ?? 100;
+    const maxPages = opts.maxPages ?? 20;
+    const all: GoBounty[] = [];
+    const seen = new Set<string>();
+    let cursor: string | undefined;
+    for (let page = 0; page < maxPages; page++) {
+      const { items, nextCursor } = await this.tasksPage({
+        phase: opts.phase,
+        sort: opts.sort,
+        order: opts.order,
+        limit: pageSize,
+        cursor,
+      });
+      let fresh = 0;
+      for (const it of items) {
+        if (seen.has(it.taskId)) continue;
+        seen.add(it.taskId);
+        all.push(it);
+        fresh++;
+      }
+      // stop when the page is empty, there's no cursor, or it stopped advancing
+      if (!nextCursor || items.length === 0 || fresh === 0) break;
+      cursor = nextCursor;
     }
-    const data = await this.get<GoTasksResponse>("/v2/tasks", params);
-    return data.items ?? [];
+    return all;
   }
 
   async stats(): Promise<GoStats> {
@@ -96,8 +148,9 @@ export function parseSubmissionUrl(
 }
 
 /**
- * Given a GO submission URL, fetch that submission's image attachment URLs.
- * Returns [] if the link isn't a submission URL or the submission/images aren't found.
+ * Given a GO submission URL, fetch that submission's media attachment URLs
+ * (images AND videos). Returns [] if the link isn't a submission URL or the
+ * submission/attachments aren't found.
  */
 export async function fetchSubmissionImages(
   url: string,
@@ -116,7 +169,16 @@ export async function fetchSubmissionImages(
   const sub = items.find((s) => s.submissionId === ids.submissionId);
   if (!sub?.attachments) return [];
   return sub.attachments
-    .filter((a) => (a.kind === "image" || (a.contentType ?? "").startsWith("image/")) && a.url)
+    .filter((a) => {
+      const ct = a.contentType ?? "";
+      return (
+        (a.kind === "image" ||
+          a.kind === "video" ||
+          ct.startsWith("image/") ||
+          ct.startsWith("video/")) &&
+        a.url
+      );
+    })
     .map((a) => a.url!) as string[];
 }
 

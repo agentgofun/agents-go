@@ -81,6 +81,7 @@ export interface GoTasksResponse {
   items: GoBounty[];
   total?: number;
   facets?: unknown;
+  nextCursor?: string | null;
 }
 
 export interface GoStats {

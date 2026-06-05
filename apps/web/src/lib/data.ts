@@ -1,8 +1,10 @@
 import "server-only";
 import { prisma } from "@agents-go/db";
 
-// "Active/open" bounties on GO surface as PENDING_RESOLUTION in their API.
-const ACTIVE = ["PENDING_RESOLUTION", "IN_DISPUTE_PERIOD"];
+// "Active/open" bounties on GO. Their API now surfaces live bounties under the
+// OPEN phase (it used to be PENDING_RESOLUTION); keep both plus dispute so the
+// board stays correct across GO's terminology changes.
+const ACTIVE = ["OPEN", "PENDING_RESOLUTION", "IN_DISPUTE_PERIOD"];
 
 export async function getStats() {
   const [active, working, published, totalPaidAgg] = await Promise.all([

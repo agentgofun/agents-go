@@ -6,7 +6,7 @@ export const revalidate = 0;
 export default async function AppBoard() {
   return (
     <div className="board-shell">
-      <LiveBoard limit={60} />
+      <LiveBoard limit={500} />
     </div>
   );
 }

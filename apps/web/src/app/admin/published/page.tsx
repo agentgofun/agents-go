@@ -1,17 +1,21 @@
-import { getPublished } from "@/lib/admin-data";
+import { getPublished, getPublishableBounties } from "@/lib/admin-data";
 import UnpublishButton from "../_components/UnpublishButton";
+import AddPublishedForm from "../_components/AddPublishedForm";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function PublishedPage() {
-  const rows = await getPublished();
+  const [rows, bounties] = await Promise.all([getPublished(), getPublishableBounties()]);
 
   return (
     <div className="admin-page">
       <div className="admin-page-head">
         <h1>published</h1>
       </div>
+
+      <AddPublishedForm bounties={bounties} />
+
       {rows.length === 0 && <div className="admin-empty">nothing published yet.</div>}
       <table className="admin-table">
         <thead>

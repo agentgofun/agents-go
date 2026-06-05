@@ -924,7 +924,8 @@ textarea {
   gap: 6px;
   margin-top: 9px;
 }
-.proof-imgs img {
+.proof-imgs img,
+.proof-imgs video {
   width: 64px;
   height: 64px;
   object-fit: cover;

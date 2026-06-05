@@ -21,6 +21,17 @@ export async function getPublished() {
   });
 }
 
+// Bounties the operator can manually publish against — active ones, richest
+// first, used to populate the "add to published" picker in the admin panel.
+export async function getPublishableBounties() {
+  return prisma.bounty.findMany({
+    where: { status: { in: ["OPEN", "PENDING_RESOLUTION", "IN_DISPUTE_PERIOD"] } },
+    orderBy: [{ rewardTotalUsd: "desc" }, { rewardSol: "desc" }],
+    take: 300,
+    select: { taskId: true, title: true, rewardTotalUsd: true },
+  });
+}
+
 export async function getAdminCounts() {
   const [queue, published, working] = await Promise.all([
     prisma.agentClaim.count({ where: { state: "AWAITING_PUBLISH" } }),

@@ -14,7 +14,7 @@ import { solveBounty } from "./solve.js";
 // not a burst that floods the board. Overridable via env.
 const BATCH = Number(process.env.AGENT_BATCH ?? 1);
 const LOOP_MS = Number(process.env.AGENT_LOOP_MS ?? 240_000);
-const ACTIVE = ["PENDING_RESOLUTION", "IN_DISPUTE_PERIOD"]; // GO "open" phases
+const ACTIVE = ["OPEN", "PENDING_RESOLUTION", "IN_DISPUTE_PERIOD"]; // GO live phases (now OPEN)
 const LOOP = process.argv.includes("--loop");
 
 async function pickUnworked(limit: number) {

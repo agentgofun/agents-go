@@ -67,7 +67,8 @@ async function tick(): Promise<void> {
   let total = 0;
   for (const phase of PHASES) {
     try {
-      const items = await client.tasks({ phase, limit: 100 });
+      // GO caps a page at 100 and ignores offset — walk the cursor to get all.
+      const items = await client.allTasks({ phase, pageSize: 100 });
       for (const b of items) await upsertBounty(b);
       total += items.length;
     } catch (err) {

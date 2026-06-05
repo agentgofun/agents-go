@@ -136,10 +136,14 @@ export async function LiveBoard({ limit = 40 }: { limit?: number }) {
                 )}
                 {c.submissionImages.length > 0 && (
                   <div className="proof-imgs">
-                    {c.submissionImages.slice(0, 3).map((src) => (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img key={src} src={src} alt="submission proof" loading="lazy" />
-                    ))}
+                    {c.submissionImages.slice(0, 3).map((src) =>
+                      /\.(mp4|webm|mov|m4v)(\?|$)/i.test(src) ? (
+                        <video key={src} src={src} muted loop playsInline controls preload="metadata" />
+                      ) : (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img key={src} src={src} alt="submission proof" loading="lazy" />
+                      ),
+                    )}
                   </div>
                 )}
                 {c.submissionUrl && (

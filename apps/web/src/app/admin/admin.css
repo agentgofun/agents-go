@@ -287,3 +287,60 @@
 .admin-mini:hover {
   color: #e8f0e4;
 }
+
+/* manual "add to published" form */
+.add-pub {
+  border: 1px solid #2d3d26;
+  background: #11150f;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+}
+.add-pub-head {
+  font-size: 12px;
+  color: #6ee06e;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+.add-pub-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.add-pub-row select {
+  flex: 1 1 240px;
+  min-width: 0;
+  background: #0a0c0a;
+  border: 1px solid #2d3d26;
+  color: #e8f0e4;
+  padding: 8px 10px;
+  font-size: 13px;
+}
+.add-pub-row input {
+  flex: 2 1 280px;
+  min-width: 0;
+  background: #0a0c0a;
+  border: 1px solid #2d3d26;
+  color: #e8f0e4;
+  padding: 8px 10px;
+  font-size: 13px;
+}
+.add-pub-row button {
+  background: #6ee06e;
+  color: #0a0c0a;
+  border: none;
+  padding: 8px 16px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.add-pub-row button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.add-pub-msg {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #8a9683;
+}
