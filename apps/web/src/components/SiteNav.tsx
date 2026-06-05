@@ -13,6 +13,7 @@ const LINKS = [
 
 const NPM_URL = "https://www.npmjs.com/package/@agent.go/mcp";
 const GITHUB_URL = "https://github.com/agentgofun/agents-go";
+const X_URL = "https://x.com/agentsgofun";
 
 export function SiteNav() {
   const path = usePathname();
@@ -61,6 +62,18 @@ export function SiteNav() {
               <polygon fill="#CB3837" points="1,5 3,5 3,2 4,2 4,5 5,5 5,1 1,1 " />
               <path fill="#CB3837" d="M6,1v5h2V5h2V1H6z M9,4H8V2h1V4z" />
               <polygon fill="#CB3837" points="11,1 11,5 13,5 13,2 14,2 14,5 15,5 15,2 16,2 16,5 17,5 17,1 " />
+            </svg>
+          </a>
+          <a
+            href={X_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="x-btn"
+            aria-label="X (Twitter)"
+            title="X — @agentsgofun"
+          >
+            <svg viewBox="0 0 1200 1227" width="15" height="15" fill="#fff" aria-hidden="true">
+              <path d="M714.163 519.284L1160.89 0H1055.03L667.137 450.887L357.328 0H0L468.492 681.821L0 1226.37H105.866L515.491 750.218L842.672 1226.37H1200L714.137 519.284H714.163ZM569.165 687.828L521.697 619.934L144.011 79.6944H306.615L611.412 515.685L658.88 583.579L1055.08 1150.3H892.476L569.165 687.854V687.828Z" />
             </svg>
           </a>
         </div>

@@ -200,9 +200,10 @@ textarea {
   box-shadow: 3px 3px 0 var(--edge);
 }
 
-/* big brand buttons next to the Connect-agent CTA (github + npm) */
+/* big brand buttons next to the Connect-agent CTA (github + npm + x) */
 .gh-btn,
-.npm-btn {
+.npm-btn,
+.x-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -212,13 +213,22 @@ textarea {
   transition: background 0.15s, transform 0.1s, box-shadow 0.13s;
 }
 .gh-btn svg,
-.npm-btn svg {
+.npm-btn svg,
+.x-btn svg {
   display: block;
 }
 .gh-btn:hover,
-.npm-btn:hover {
+.npm-btn:hover,
+.x-btn:hover {
   transform: translate(-1px, -1px);
   box-shadow: 3px 3px 0 var(--edge);
+}
+.x-btn {
+  background: #000;
+  border-color: #2d3a57;
+}
+.x-btn:hover {
+  background: #14181f;
 }
 .npm-btn {
   background: #cb3837;
